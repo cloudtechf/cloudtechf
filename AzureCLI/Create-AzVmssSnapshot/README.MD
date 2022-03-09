@@ -25,6 +25,8 @@ $galleryName = "" #Azure Compute Gallery Name
 $galleryImageDefinition = "" #Image Definition Name
 $imageVersion = "" #Version Id, Example -> 20.30.40
 
+https://techf.cloud/index.php/2022/03/09/creating-an-image-from-a-vmss-instance/
+
 ```
 
 ## Contributing
