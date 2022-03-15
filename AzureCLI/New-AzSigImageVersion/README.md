@@ -1,4 +1,4 @@
-# Enable-AzAcceleratedNicMultipleVMs
+# New-AzSigImageVersion
 
 This script allows you to create a new Shared Image Version by using az cli commands
 
