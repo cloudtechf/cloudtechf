@@ -1,0 +1,136 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "aibName":{
+      "type": "string",
+      "metadata": {
+        "description": "Name Of the Azure Image Template Resource"
+      }
+    },
+    "sharedImageGalleryName":{
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Shared Image Gallery"
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "metadata": {
+        "description": "Image Definition Name"
+      }
+    },
+    "subscriptionId":{
+      "type": "string",
+      "metadata": {
+        "description": "Subscription ID"
+      }
+    },
+    "sharedImageRG": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group of the Shared Image Gallery"
+      }
+    },
+    "sourceVersionId":{
+      "type": "string"
+    },
+    "vmSku": {
+      "type": "string",
+      "defaultValue": "Standard_B2ms",
+      "metadata": {
+        "description": "Size of VM that builds the image."
+      }
+    },
+    "osDiskSizeGb": {
+      "type": "int",
+      "defaultValue": 127,
+      "metadata": {
+        "description": "Size of final image created."
+      }
+    },
+    "vnetRgName": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual Network resource group name"
+      }
+    },
+    "vnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Vnet Name that you'll use to add the VM"
+      }
+    },
+    "subnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet name"
+      }
+    },
+    "userAssignedIdentityId": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "tagValues": {
+      "type": "object"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "name": "[parameters('aibName')]",
+      "type": "Microsoft.VirtualMachineImages/imageTemplates",
+      "apiVersion": "2020-02-14",
+      "tags": "[parameters('tagValues')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[parameters('userAssignedIdentityId')]": {}
+        }
+      },
+      "location": "[parameters('location')]",
+      "dependsOn": [],
+      "properties": {
+        "buildTimeoutInMinutes": 120,
+        "vmProfile": {
+          "vmSize": "[parameters('vmSku')]",
+          "osDiskSizeGb": "[parameters('osDiskSizeGb')]",
+          "vnetConfig": {
+            "subnetId": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('vnetRgName'), '/providers/Microsoft.Network/virtualNetworks/', parameters('vnetName'), '/subnets/', parameters('subnetName'))]"
+        }
+        },
+        "customize": [
+          {
+            "type": "WindowsUpdate",
+            "searchCriteria": "IsInstalled=0",
+              "filters": [
+                "exclude:$_.Title -like '*Preview*'",
+                "include:$true"
+            ],
+              "updateLimit": 20
+          },
+          {
+            "type": "WindowsRestart",
+            "restartCheckCommand": "echo Azure-Image-Builder-Restarted-the-VM  > c:\\buildArtifacts\\azureImageBuilderRestart.txt",
+            "restartTimeout": "50m"
+          }
+        ],
+        "source": {
+          "type": "SharedImageVersion",
+          "imageVersionID": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('sharedImageRG'), '/providers/Microsoft.Compute/galleries/', parameters('sharedImageGalleryName'), '/images/', parameters('imageName'), '/versions/', parameters('sourceVersionId'))]"
+        },
+        "distribute":
+        [
+          {
+            "type": "SharedImage",
+            "galleryImageId": "[concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', parameters('sharedImageRG'), '/providers/Microsoft.Compute/galleries/', parameters('sharedImageGalleryName'), '/images/', parameters('imageName'))]",
+            "runOutputName": "[parameters('imageName')]",
+            "replicationRegions": ["[parameters('location')]"]
+          }
+        ]
+      }
+    }
+  ]
+}

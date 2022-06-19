@@ -1,0 +1,51 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "aibName":{
+            "value": ""
+        },
+        "sharedImageGalleryName":{
+            "value": ""
+        },
+        "imageName": {
+            "value": ""
+        },
+        "sourceVersionId":{
+            "value": ""
+        },
+        "subscriptionId":{
+            "value": ""
+        },
+        "sharedImageRG":{
+            "value": ""
+        },
+        "vmSku": {
+            "value": ""
+        },
+        "osDiskSizeGb": {
+            "value": 127
+        },
+        "vnetRgName": {
+            "value": ""
+        },
+        "vnetName": {
+            "value": ""
+        },
+        "subnetName": {
+            "value": ""
+        },
+        "userAssignedIdentityId": {
+            "value": ""
+        },
+        "location": {
+            "value": ""
+        },
+        "tagValues": {
+            "value": {
+                "Name1": "Value1",
+                "Name2": "Value2"
+            }
+        }
+    }
+}

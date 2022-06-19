@@ -1,0 +1,5 @@
+variables:
+  poolName: 'windows-latest'
+  serviceConnection: 'svc-msdnsubscription'
+  tenantId: '36b0bdbc-b535-45bc-af86-e2ab4e8eead3'
+  system.debug: true

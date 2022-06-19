@@ -1,0 +1,28 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureImageBuilderTask@1
+  inputs:
+    managedIdentity: '<UserAssignedIdentityURI>'
+    imageSource: '<ImageSource>' #Azure Compute Gallery or Marketplace
+    packagePath: '<Script URL>'
+    inlineScript: |
+        #Commands that your can run inside the VM if you don't have a Script
+    storageAccountName: '<Storage Account to Store the Image Template>'
+    distributeType: 'sig' #Distribution Type
+    galleryImageId: '<Image Gallery URI>'
+    replicationRegions: '<Replication Region or Regions>'
+    ibSubscription: '<Subscription>'
+    ibAzureResourceGroup: '<Image Builder Resource Group>'
+    ibLocation: '<Image Builder Location>'
+    vmSize: '<Image Bilder VM Size>'
+    buildTimeoutInMinutes: '<Build Time Out>'
